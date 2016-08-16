@@ -1,16 +1,14 @@
-FROM jantoine/drupal
-
-# Configure PHP for development.
-RUN echo "max_execution_time = 0" >> /usr/local/etc/php/php.ini \
-  && echo "max_input_vars = 2000" >> /usr/local/etc/php/php.ini \
-  && echo "memory_limit = -1" >> /usr/local/etc/php/php.ini
+FROM jantoine/drupal:6
 
 # Install Xdebug.
-RUN pecl install xdebug \
-  && echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20131226/xdebug.so" > /usr/local/etc/php/conf.d/ext-xdebug.ini \
-  && echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/ext-xdebug.ini \
-  && echo "xdebug.remote_autostart=0" >> /usr/local/etc/php/conf.d/ext-xdebug.ini \
-  && echo "xdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/ext-xdebug.ini \
-  && echo "xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/ext-xdebug.ini
+RUN pecl install xdebug-2.2.7 \
+  && echo "zend_extension=/usr/lib/php5/20090626/xdebug.so" > /etc/php5/conf.d/xdebug.ini \
+  && echo "xdebug.max_nesting_level=200" >> /etc/php5/conf.d/xdebug.ini \
+  && echo "xdebug.remote_enable=1" >> /etc/php5/conf.d/xdebug.ini \
+  && echo "xdebug.remote_autostart=0" >> /etc/php5/conf.d/xdebug.ini \
+  && echo "xdebug.remote_connect_back=1" >> /etc/php5/conf.d/xdebug.ini \
+  && echo "xdebug.remote_port=9000" >> /etc/php5/conf.d/xdebug.ini
 
-CMD ["apache2-foreground"]
+COPY conf/php5/apache2/php.ini /etc/php5/apache2/
+
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
