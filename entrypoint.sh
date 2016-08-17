@@ -31,7 +31,7 @@ if [[ ! -z "$REMOTE_FILE_SERVER" ]]; then
   if ! grep -q remote-file-server.conf /etc/apache2/sites-available/default; then
     # Include the remote file server configuration file.
     sed -i '/<\/VirtualHost>/i \
-      "    Include sites-configuration/remote-file-server.conf"' /etc/apache2/sites-available/default
+      Include sites-configuration/remote-file-server.conf' /etc/apache2/sites-available/default
   fi
 
   # If a remote file server has not been set in the default-ssl apache conf
@@ -39,7 +39,7 @@ if [[ ! -z "$REMOTE_FILE_SERVER" ]]; then
   if ! grep -q remote-file-server.conf /etc/apache2/sites-available/default-ssl; then
     # Include the remote file server configuration file.
     sed -i '/<\/VirtualHost>/i \
-      "        Include sites-configuration/remote-file-server.conf"' /etc/apache2/sites-available/default-ssl
+      Include sites-configuration/remote-file-server.conf' /etc/apache2/sites-available/default-ssl
   fi
 fi
 
