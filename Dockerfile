@@ -9,6 +9,15 @@ RUN pecl install xdebug-2.2.7 \
   && echo "xdebug.remote_connect_back=1" >> /etc/php5/conf.d/xdebug.ini \
   && echo "xdebug.remote_port=9000" >> /etc/php5/conf.d/xdebug.ini
 
+# Create an apache sites configuration folder.
+RUN mkdir /etc/apache2/sites-configuration
+
+# Copy the remote file server site include configuration file.
+COPY conf/apache2/sites-configuration/remote-file-server.conf /etc/apache2/sites-configuration/
+
 COPY conf/php5/apache2/php.ini /etc/php5/apache2/
+
+# Overwrite the base images entrypoint.sh file.
+COPY entrypoint.sh /
 
 CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]

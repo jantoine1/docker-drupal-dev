@@ -7,3 +7,7 @@ This image builds off of the [`jantoine/drupal:6`](https://hub.docker.com/r/jant
   This is required for dealing with really large features.
 * Sets PHP's memory_limit to -1 (unlimited)
 * Installs the 2.2.7 release of Xdebug and configures for remote debugging.
+* Provides a remote file server variable for defining a remote server to fetch files from if they're not found locally.
+  ```
+  -e REMOTE_FILE_SERVER="example.com"
+  ```
