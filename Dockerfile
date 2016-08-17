@@ -13,4 +13,10 @@ RUN pecl install xdebug \
   && echo "xdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/ext-xdebug.ini \
   && echo "xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/ext-xdebug.ini
 
+# Copy the remote file server site include configuration file.
+COPY conf/apache2/conf-available/remote-file-server.conf /etc/apache2/conf-available/
+
+# Overwrite the base images entrypoint.sh file.
+COPY entrypoint.sh /
+
 CMD ["apache2-foreground"]
