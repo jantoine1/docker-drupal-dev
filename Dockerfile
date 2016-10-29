@@ -1,4 +1,4 @@
-FROM jantoine/drupal
+FROM jantoine/drupal:7
 
 # Configure PHP for development.
 RUN echo "max_execution_time = 0" >> /usr/local/etc/php/php.ini \
