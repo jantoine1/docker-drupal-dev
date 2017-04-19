@@ -13,6 +13,17 @@ RUN pecl install xdebug \
   && echo "xdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/ext-xdebug.ini \
   && echo "xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/ext-xdebug.ini
 
+# Install Coder.
+RUN composer global require drupal/coder \
+  && echo 'export PATH="$PATH:$HOME/.composer/vendor/bin"' >> ~/.bashrc \
+  && export PATH="$PATH:$HOME/.composer/vendor/bin" \
+  && phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer \
+  && { \
+    echo "alias drupalcs=\"phpcs --standard=Drupal --extensions='php,module,inc,install,test,profile,theme,css,info,txt,md'\""; \
+    echo "alias drupalcsp=\"phpcs --standard=DrupalPractice --extensions='php,module,inc,install,test,profile,theme,css,info,txt,md'\""; \
+    echo "alias drupalcbf=\"phpcbf --standard=Drupal --extensions='php,module,inc,install,test,profile,theme,css,info,txt,md'\""; \
+  } >> ~/.bashrc
+
 # Copy the remote file server site include configuration file.
 COPY conf/apache2/conf-available/remote-file-server.conf /etc/apache2/conf-available/
 
