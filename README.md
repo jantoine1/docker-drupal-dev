@@ -11,7 +11,7 @@ This image builds off of the [`jantoine/drupal:6`](https://hub.docker.com/r/jant
   ```
   -e USER="user" -e UID="1000"
   ```
-* Provides a remote file server variable for defining a remote server to fetch files from if they're not found locally.
+* Provides a REMOTE_FILE_SERVER variable for defining a remote server to fetch files from if they're not found locally.
   ```
   -e REMOTE_FILE_SERVER="example.com"
   ```
