@@ -1,5 +1,10 @@
 FROM jantoine/drupal
 
+# Install GIT.
+RUN apt update \
+  && apt install -y \
+    git
+
 # Configure PHP for development.
 RUN echo "max_execution_time = 0" >> /usr/local/etc/php/php.ini \
   && echo "max_input_vars = 2000" >> /usr/local/etc/php/php.ini \
