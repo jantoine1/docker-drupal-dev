@@ -22,6 +22,10 @@ RUN set -ex; \
 # Configure PHP for development.
 RUN set -ex; \
   \
+  # Disable PHP's opcache extension so code changes take effect immediately.
+  rm /usr/local/etc/php/conf.d/opcache-recommended.ini; \
+  rm /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini; \
+  \
   { \
     echo 'max_execution_time=0'; \
     echo 'memory_limit=-1'; \

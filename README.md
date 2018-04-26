@@ -5,6 +5,7 @@ This image builds off of the [`jantoine/drupal`](https://hub.docker.com/r/jantoi
 * Installs Composer
 * Installs GIT
   This is required by composer projects using dev releases or applying patches.
+* Disables PHP's opcache extension so code changes take effect immediately.
 * Sets the following PHP config variables:
   * 'max_execution_time=0' (unlimited)
   * 'memory_limit=-1' (unlimited)
