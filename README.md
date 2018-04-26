@@ -2,12 +2,14 @@
 
 This image builds off of the [`jantoine/drupal`](https://hub.docker.com/r/jantoine/drupal/) image adding the following development configuration and tools:
 
+* Installs Composer
 * Installs GIT
   This is required by composer projects using dev releases or applying patches.
-* Sets PHP's max_execution_time to 0 (unlimited)
-* Sets PHP's max_input_vars to 2000
-  This is required for dealing with really large features.
-* Sets PHP's memory_limit to -1 (unlimited)
+* Sets the following PHP config variables:
+  * 'max_execution_time=0' (unlimited)
+  * 'memory_limit=-1' (unlimited)
+  * 'post_max_size=0' (unlimited)
+  * 'upload_max_filesize=0' (unlimited)
 * Installs the latest stable release of Xdebug and configures for remote debugging.
 * Installs drupal/coder via Composer.
 * Installs Node.js v8.x.
