@@ -4,25 +4,28 @@
 set -e
 
 # If required environment variables are not set.
-if [[ -z "$USER" || -z "$UID" ]]; then
-  if [[ -z "$USER" ]]; then
-    echo "Need to set USER"
+if [[ -z "$HOST_USER" || -z "$HOST_UID" ]]; then
+  if [[ -z "$HOST_USER" ]]; then
+    echo "Need to set the HOST_USER environment variable"
   fi
 
-  if [[ -z "$UID" ]]; then
-    echo "Need to set UID"
+  if [[ -z "$HOST_UID" ]]; then
+    echo "Need to set the HOST_UID environment variable"
   fi
 
   exit 1
 fi
 
 # If the user has not already been created.
-if [[ ! $(id -u $USER) =~ ^-?[0-9]+$ ]]; then
+if [[ ! $(id -u $HOST_USER) =~ ^-?[0-9]+$ ]]; then
   # Create the user.
-  adduser --group --system --uid $UID $USER
+  adduser --disabled-password --gecos GECOS --uid $HOST_UID $HOST_USER
 
-  # Add the www-data user to the $USER group.
-  usermod -a -G $USER www-data
+  # Add the user to the sudo group.
+  usermod -aG sudo $HOST_USER
+
+  # Allow the user to use sudo to run all commands without a password.
+  echo $HOST_USER' ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/$HOST_USER
 fi
 
 # If a remote file server has been specified.
