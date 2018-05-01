@@ -38,7 +38,7 @@ RUN set -ex; \
   \
   pecl install xdebug; \
   { \
-    echo 'zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/xdebug.so'; \
+    echo 'zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/xdebug.so'; \
     echo 'xdebug.remote_enable=1'; \
     echo 'xdebug.remote_autostart=0'; \
     echo 'xdebug.remote_connect_back=1'; \
