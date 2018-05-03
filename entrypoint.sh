@@ -18,14 +18,27 @@ fi
 
 # If the user has not already been created.
 if [[ ! $(id -u $HOST_USER) =~ ^-?[0-9]+$ ]]; then
+  # If a folder for the user already exists, i.e. a host folder was bind mounted
+  # inside the user folder, manually copy files from the /etc/skel directory.
+  if [[ -d /home/$HOST_USER ]]; then
+    # Copy files from the /etc/skel directory into the user's home directory.
+    cp -a /etc/skel/. /home/$HOST_USER/
+  fi
+
   # Create the user.
   adduser --disabled-password --gecos GECOS --uid $HOST_UID $HOST_USER
+
+  # Ensure the users home directory is owned by them.
+  chown -R $HOST_USER:$HOST_USER /home/$HOST_USER
 
   # Add the user to the sudo group.
   usermod -aG sudo $HOST_USER
 
   # Allow the user to use sudo to run all commands without a password.
   echo $HOST_USER' ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/$HOST_USER
+
+  # Add the user to the rvm group.
+  usermod -aG rvm $HOST_USER
 fi
 
 # If a remote file server has been specified.

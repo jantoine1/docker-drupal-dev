@@ -49,16 +49,21 @@ RUN set -ex; \
 # Install Coder.
 RUN set -ex; \
   \
+  export COMPOSER_HOME="/usr/local/composer"; \
   composer global require drupal/coder; \
-  echo 'export PATH="$PATH:$HOME/.composer/vendor/bin"' >> ~/.bashrc; \
-  export PATH="$PATH:$HOME/.composer/vendor/bin"; \
-  phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer; \
+  echo '' | tee -a ~/.bashrc /etc/skel/.bashrc; \
+  echo '# Include global composer binaries in PATH.' | tee -a ~/.bashrc /etc/skel/.bashrc; \
+  echo 'export PATH="$PATH:/usr/local/composer/vendor/bin"' | tee -a ~/.bashrc /etc/skel/.bashrc; \
+  export PATH="$PATH:/usr/local/composer/vendor/bin"; \
+  phpcs --config-set installed_paths /usr/local/composer/vendor/drupal/coder/coder_sniffer; \
   { \
+    echo ''; \
+    echo '# Custom phpcs aliases.'; \
     echo "alias drupalcs=\"phpcs --standard=Drupal --extensions='php,module,inc,install,test,profile,theme,css,info,txt,md' --ignore=*\.bean.inc,*\.context.inc,*\.current_search.inc,*\.default_breakpoint_group.inc,*\.default_breakpoints.inc,*\.default_picture_mapping.inc,*\.entityqueue_default.inc,*\.facetapi_defaults.inc,*\.features.commerce_checkout_panes.inc,*\.features.field_base.inc,*\.features.field_instance.inc,*\.features.filter.inc,*\.features.inc,*\.features.media_wysiwyg.inc,*\.features.taxonomy.inc,*\.features.user_permission.inc,*\.features.user_role.inc,*\.features.wysiwyg.inc,*\.field_group.inc,*\.file_default_displays.inc,*\.file_type.inc,*\.flexslider_default_preset.inc,*\.flexslider_picture_optionset.inc,*\.rules_defaults.inc,*\.strongarm.inc,*\.views_default.inc,*/themes/custom/*\.css\""; \
     echo "alias drupalcsp=\"phpcs --standard=DrupalPractice --extensions='php,module,inc,install,test,profile,theme,css,info,txt,md' --ignore=*\.bean.inc,*\.context.inc,*\.current_search.inc,*\.default_breakpoint_group.inc,*\.default_breakpoints.inc,*\.default_picture_mapping.inc,*\.entityqueue_default.inc,*\.facetapi_defaults.inc,*\.features.commerce_checkout_panes.inc,*\.features.field_base.inc,*\.features.field_instance.inc,*\.features.filter.inc,*\.features.inc,*\.features.media_wysiwyg.inc,*\.features.taxonomy.inc,*\.features.user_permission.inc,*\.features.user_role.inc,*\.features.wysiwyg.inc,*\.field_group.inc,*\.file_default_displays.inc,*\.file_type.inc,*\.flexslider_default_preset.inc,*\.flexslider_picture_optionset.inc,*\.rules_defaults.inc,*\.strongarm.inc,*\.views_default.inc,*/themes/custom/*\.css\""; \
     echo "alias drupalcbf=\"phpcbf --standard=Drupal --extensions='php,module,inc,install,test,profile,theme,css,info,txt,md' --ignore=*\.bean.inc,*\.context.inc,*\.current_search.inc,*\.default_breakpoint_group.inc,*\.default_breakpoints.inc,*\.default_picture_mapping.inc,*\.entityqueue_default.inc,*\.facetapi_defaults.inc,*\.features.commerce_checkout_panes.inc,*\.features.field_base.inc,*\.features.field_instance.inc,*\.features.filter.inc,*\.features.inc,*\.features.media_wysiwyg.inc,*\.features.taxonomy.inc,*\.features.user_permission.inc,*\.features.user_role.inc,*\.features.wysiwyg.inc,*\.field_group.inc,*\.file_default_displays.inc,*\.file_type.inc,*\.flexslider_default_preset.inc,*\.flexslider_picture_optionset.inc,*\.rules_defaults.inc,*\.strongarm.inc,*\.views_default.inc,*/themes/custom/*\.css\""; \
     echo "alias gitcs=\"drupalcs $(git diff --name-only | tr '\n' ' ')\""; \
-  } >> ~/.bashrc
+  } | tee -a ~/.bashrc /etc/skel/.bashrc
 
 # Install Node.js 8.x.
 RUN set -ex; \
@@ -85,7 +90,8 @@ RUN set -ex; \
   export LANG="en_US.UTF-8"; \
   gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB; \
   addgroup --system rvm; \
-  \curl -sSL https://get.rvm.io | sudo bash -s stable --ruby --gems=bundler
+  \curl -sSL https://get.rvm.io | sudo bash -s stable; \
+  /bin/bash -l -c ". /etc/profile.d/rvm.sh && rvm install ruby --latest && gem install bundler && rvm fix-permissions"
 
 # Copy the remote file server site include configuration file.
 COPY conf/apache2/conf-available/remote-file-server.conf /etc/apache2/conf-available/
