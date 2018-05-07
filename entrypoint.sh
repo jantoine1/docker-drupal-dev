@@ -4,25 +4,41 @@
 set -e
 
 # If required environment variables are not set.
-if [[ -z "$USER" || -z "$UID" ]]; then
-  if [[ -z "$USER" ]]; then
-    echo "Need to set USER"
+if [[ -z "$HOST_USER" || -z "$HOST_UID" ]]; then
+  if [[ -z "$HOST_USER" ]]; then
+    echo "Need to set the HOST_USER environment variable"
   fi
 
-  if [[ -z "$UID" ]]; then
-    echo "Need to set UID"
+  if [[ -z "$HOST_UID" ]]; then
+    echo "Need to set the HOST_UID environment variable"
   fi
 
   exit 1
 fi
 
 # If the user has not already been created.
-if [[ ! $(id -u $USER) =~ ^-?[0-9]+$ ]]; then
-  # Create the user.
-  adduser --group --system --uid $UID $USER
+if [[ ! $(id -u $HOST_USER) =~ ^-?[0-9]+$ ]]; then
+  # If a folder for the user already exists, i.e. a host folder was bind mounted
+  # inside the user folder, manually copy files from the /etc/skel directory.
+  if [[ -d /home/$HOST_USER ]]; then
+    # Copy files from the /etc/skel directory into the user's home directory.
+    cp -a /etc/skel/. /home/$HOST_USER/
+  fi
 
-  # Add the www-data user to the $USER group.
-  usermod -a -G $USER www-data
+  # Create the user.
+  adduser --disabled-password --gecos GECOS --uid $HOST_UID $HOST_USER
+
+  # Ensure the users home directory is owned by them.
+  chown -R $HOST_USER:$HOST_USER /home/$HOST_USER
+
+  # Add the user to the sudo group.
+  usermod -aG sudo $HOST_USER
+
+  # Allow the user to use sudo to run all commands without a password.
+  echo $HOST_USER' ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/$HOST_USER
+
+  # Add the user to the rvm group.
+  usermod -aG rvm $HOST_USER
 fi
 
 # If a remote file server has been specified.
