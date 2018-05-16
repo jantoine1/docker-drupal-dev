@@ -37,9 +37,3 @@ This second example execs into an existing container as the current user.
 ```
 docker exec -it -u="user" [CONTAINER_NAME] bash
 ```
-
-This image also provides a REMOTE_FILE_SERVER environment variable for defining a remote server to fetch files from if they're not found locally.
-
-```
-docker run -e APACHE_RUN_USER="user" -e HOST_UID="1000" -e HOST_USER="user" -e REMOTE_FILE_SERVER="example.net" -it --rm jantoine/drupal-dev su - user
-```
