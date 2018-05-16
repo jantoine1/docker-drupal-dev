@@ -93,9 +93,6 @@ RUN set -ex; \
   \curl -sSL https://get.rvm.io | sudo bash -s stable; \
   /bin/bash -l -c ". /etc/profile.d/rvm.sh && rvm install ruby --latest && gem install bundler && rvm fix-permissions"
 
-# Copy the remote file server site include configuration file.
-COPY conf/apache2/conf-available/remote-file-server.conf /etc/apache2/conf-available/
-
 # Copy scripts.
 COPY entrypoint.sh /
 
