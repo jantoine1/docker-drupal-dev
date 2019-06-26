@@ -52,9 +52,11 @@ RUN set -ex; \
   \
   export COMPOSER_HOME="/usr/local/composer"; \
   composer global require drupal/coder; \
-  echo '' | tee -a ~/.bashrc /etc/skel/.bashrc; \
-  echo '# Include global composer binaries in PATH.' | tee -a ~/.bashrc /etc/skel/.bashrc; \
-  echo 'export PATH="$PATH:/usr/local/composer/vendor/bin"' | tee -a ~/.bashrc /etc/skel/.bashrc; \
+  { \
+    echo ''; \
+    echo '# Include global composer binaries in PATH.'; \
+    echo 'export PATH="$PATH:/usr/local/composer/vendor/bin"'; \
+  } | tee -a ~/.bashrc /etc/skel/.bashrc; \
   export PATH="$PATH:/usr/local/composer/vendor/bin"; \
   phpcs --config-set installed_paths /usr/local/composer/vendor/drupal/coder/coder_sniffer; \
   { \
@@ -63,17 +65,19 @@ RUN set -ex; \
     echo "alias drupalcs=\"phpcs --standard=Drupal --extensions='php,module,inc,install,test,profile,theme,css,info,txt,md' --ignore=*\.bean.inc,*\.context.inc,*\.current_search.inc,*\.default_breakpoint_group.inc,*\.default_breakpoints.inc,*\.default_picture_mapping.inc,*\.entityqueue_default.inc,*\.facetapi_defaults.inc,*\.features.commerce_checkout_panes.inc,*\.features.field_base.inc,*\.features.field_instance.inc,*\.features.filter.inc,*\.features.inc,*\.features.media_wysiwyg.inc,*\.features.taxonomy.inc,*\.features.user_permission.inc,*\.features.user_role.inc,*\.features.wysiwyg.inc,*\.field_group.inc,*\.file_default_displays.inc,*\.file_type.inc,*\.flexslider_default_preset.inc,*\.flexslider_picture_optionset.inc,*\.rules_defaults.inc,*\.strongarm.inc,*\.views_default.inc,*/themes/custom/*\.css\""; \
     echo "alias drupalcsp=\"phpcs --standard=DrupalPractice --extensions='php,module,inc,install,test,profile,theme,css,info,txt,md' --ignore=*\.bean.inc,*\.context.inc,*\.current_search.inc,*\.default_breakpoint_group.inc,*\.default_breakpoints.inc,*\.default_picture_mapping.inc,*\.entityqueue_default.inc,*\.facetapi_defaults.inc,*\.features.commerce_checkout_panes.inc,*\.features.field_base.inc,*\.features.field_instance.inc,*\.features.filter.inc,*\.features.inc,*\.features.media_wysiwyg.inc,*\.features.taxonomy.inc,*\.features.user_permission.inc,*\.features.user_role.inc,*\.features.wysiwyg.inc,*\.field_group.inc,*\.file_default_displays.inc,*\.file_type.inc,*\.flexslider_default_preset.inc,*\.flexslider_picture_optionset.inc,*\.rules_defaults.inc,*\.strongarm.inc,*\.views_default.inc,*/themes/custom/*\.css\""; \
     echo "alias drupalcbf=\"phpcbf --standard=Drupal --extensions='php,module,inc,install,test,profile,theme,css,info,txt,md' --ignore=*\.bean.inc,*\.context.inc,*\.current_search.inc,*\.default_breakpoint_group.inc,*\.default_breakpoints.inc,*\.default_picture_mapping.inc,*\.entityqueue_default.inc,*\.facetapi_defaults.inc,*\.features.commerce_checkout_panes.inc,*\.features.field_base.inc,*\.features.field_instance.inc,*\.features.filter.inc,*\.features.inc,*\.features.media_wysiwyg.inc,*\.features.taxonomy.inc,*\.features.user_permission.inc,*\.features.user_role.inc,*\.features.wysiwyg.inc,*\.field_group.inc,*\.file_default_displays.inc,*\.file_type.inc,*\.flexslider_default_preset.inc,*\.flexslider_picture_optionset.inc,*\.rules_defaults.inc,*\.strongarm.inc,*\.views_default.inc,*/themes/custom/*\.css\""; \
-    echo "alias gitcs=\"drupalcs $(git diff --name-only | tr '\n' ' ')\""; \
+    echo "alias gitcs=\"drupalcs \$(git diff --name-only | tr '\n' ' ')\""; \
+    echo "alias gitcsp=\"drupalcsp \$(git diff --name-only | tr '\n' ' ')\""; \
+    echo "alias gitcbf=\"drupalcbf \$(git diff --name-only | tr '\n' ' ')\""; \
   } | tee -a ~/.bashrc /etc/skel/.bashrc
 
-# Install Node.js 8.x.
+# Install Node.js 12.x.
 RUN set -ex; \
   \
   apt-get update; \
   apt-get install -y --no-install-recommends \
     gnupg \
   ;\
-  curl -sL https://deb.nodesource.com/setup_8.x | bash -; \
+  curl -sL https://deb.nodesource.com/setup_12.x | bash -; \
   apt-get install -y --no-install-recommends \
     nodejs \
   ; \
