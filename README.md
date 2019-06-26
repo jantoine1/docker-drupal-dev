@@ -16,8 +16,7 @@ This image builds from the [`jantoine/drupal`](https://hub.docker.com/r/jantoine
   * 'upload_max_filesize=0' (unlimited)
 * Xdebug (latest stable release) configured for remote debugging.
 * drupal/coder via Composer.
-* Node.js v8.x.
-* RVM (latest stable release of Ruby supported by RVM and bundler).
+* Node.js v12.x.
 
 # How to use this image
 
