@@ -46,17 +46,14 @@ RUN set -ex; \
     echo 'xdebug.remote_port=9000'; \
   } > /usr/local/etc/php/conf.d/ext-xdebug.ini
 
+# Include global composer binaries in PATH.
+ENV PATH="$PATH:/usr/local/composer/vendor/bin"
+
 # Install Coder.
 RUN set -ex; \
   \
   export COMPOSER_HOME="/usr/local/composer"; \
   composer global require drupal/coder; \
-  { \
-    echo ''; \
-    echo '# Include global composer binaries in PATH.'; \
-    echo 'export PATH="$PATH:/usr/local/composer/vendor/bin"'; \
-  } | tee -a ~/.bashrc /etc/skel/.bashrc; \
-  export PATH="$PATH:/usr/local/composer/vendor/bin"; \
   phpcs --config-set installed_paths /usr/local/composer/vendor/drupal/coder/coder_sniffer; \
   { \
     echo ''; \
@@ -81,6 +78,14 @@ RUN set -ex; \
     nodejs \
   ; \
   rm -rf /var/lib/apt/lists/*
+
+# Include the custom bin folder in PATH.
+ENV PATH="${PATH}:/usr/mnt/bin"
+
+# Create a custom bin folder for mounting custom scripts into.
+RUN set -ex; \
+  \
+  mkdir -p /usr/mnt/bin
 
 # Copy scripts.
 COPY entrypoint.sh /
