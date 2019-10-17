@@ -72,7 +72,7 @@ RUN set -ex; \
   apt-get update; \
   apt-get install -y --no-install-recommends \
     gnupg \
-  ;\
+  ; \
   curl -sL https://deb.nodesource.com/setup_12.x | bash -; \
   apt-get install -y --no-install-recommends \
     nodejs \
@@ -86,6 +86,15 @@ ENV PATH="${PATH}:/usr/mnt/bin"
 RUN set -ex; \
   \
   mkdir -p /usr/mnt/bin
+
+# Install sudo for the entrypoint.sh script.
+RUN set -ex; \
+  \
+  apt-get update; \
+  apt-get install -y --no-install-recommends \
+    sudo \
+  ; \
+  rm -rf /var/lib/apt/lists/*
 
 # Copy scripts.
 COPY entrypoint.sh /
