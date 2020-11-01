@@ -16,7 +16,7 @@ This image builds from the [`jantoine/drupal`](https://hub.docker.com/r/jantoine
   * 'upload_max_filesize=0' (unlimited)
 * Xdebug (latest stable release) configured for remote debugging.
 * drupal/coder via Composer.
-* Node.js v12.x.
+* Node.js v15.x.
 * Adds a custom /usr/mnt/bin directory to the PATH environment variable for mounting project specific executables.
 
 # How to use this image

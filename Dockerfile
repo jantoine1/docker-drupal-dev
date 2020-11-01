@@ -66,14 +66,14 @@ RUN set -ex; \
     echo "alias gitcbf=\"drupalcbf \$(git diff --name-only | tr '\n' ' ')\""; \
   } | tee -a ~/.bashrc /etc/skel/.bashrc
 
-# Install Node.js 12.x.
+# Install Node.js 15.x.
 RUN set -ex; \
   \
   apt-get update; \
   apt-get install -y --no-install-recommends \
     gnupg \
   ; \
-  curl -sL https://deb.nodesource.com/setup_12.x | bash -; \
+  curl -sL https://deb.nodesource.com/setup_15.x | bash -; \
   apt-get install -y --no-install-recommends \
     nodejs \
   ; \
