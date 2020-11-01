@@ -38,7 +38,7 @@ RUN set -ex; \
 # Install Xdebug.
 RUN set -ex; \
   \
-  pecl install xdebug; \
+  pecl install xdebug-2.8.1; \
   { \
     echo 'zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20151012/xdebug.so'; \
     echo 'xdebug.remote_enable=1'; \
@@ -70,33 +70,18 @@ RUN set -ex; \
     echo "alias gitcbf=\"drupalcbf \$(git diff --name-only | tr '\n' ' ')\""; \
   } | tee -a ~/.bashrc /etc/skel/.bashrc
 
-# Install Node.js 12.x.
+# Install Node.js 15.x.
 RUN set -ex; \
   \
   apt-get update; \
   apt-get install -y --no-install-recommends \
     gnupg \
   ;\
-  curl -sL https://deb.nodesource.com/setup_12.x | bash -; \
+  curl -sL https://deb.nodesource.com/setup_15.x | bash -; \
   apt-get install -y --no-install-recommends \
     nodejs \
   ; \
   rm -rf /var/lib/apt/lists/*
-
-# Install RVM, ruby and bundler.
-RUN set -ex; \
-  \
-  apt-get update; \
-  apt-get install -y --no-install-recommends \
-    dirmngr \
-    sudo \
-  ; \
-  rm -rf /var/lib/apt/lists; \
-  export LANG="en_US.UTF-8"; \
-  gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB; \
-  addgroup --system rvm; \
-  \curl -sSL https://get.rvm.io | sudo bash -s stable; \
-  /bin/bash -l -c ". /etc/profile.d/rvm.sh && rvm install ruby --latest && gem install bundler && rvm fix-permissions"
 
 # Copy scripts.
 COPY entrypoint.sh /
