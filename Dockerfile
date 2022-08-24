@@ -1,7 +1,7 @@
 FROM jantoine/drupal:7
 
 # Install Composer.
-RUN set -ex; \
+RUN set -eux; \
   \
   COMPOSER_SIGNATURE=$(curl https://composer.github.io/installer.sig); \
   curl -fSL "https://getcomposer.org/installer" -o composer-setup.php; \
@@ -11,7 +11,7 @@ RUN set -ex; \
   mv composer.phar /usr/local/bin/composer
 
 # Install GIT.
-RUN set -ex; \
+RUN set -eux; \
   \
   apt-get update; \
   apt-get install -y --no-install-recommends \
@@ -21,7 +21,7 @@ RUN set -ex; \
   rm -rf /var/lib/apt/lists/*
 
 # Configure PHP for development.
-RUN set -ex; \
+RUN set -eux; \
   \
   # Disable PHP's opcache extension so code changes take effect immediately.
   rm /usr/local/etc/php/conf.d/opcache-recommended.ini; \
@@ -38,9 +38,9 @@ RUN set -ex; \
 # Install Xdebug.
 RUN set -ex; \
   \
-  pecl install xdebug-2.8.1; \
+  pecl install xdebug; \
   { \
-    echo 'zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20151012/xdebug.so'; \
+    echo 'zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20190902/xdebug.so'; \
     echo 'xdebug.remote_enable=1'; \
     echo 'xdebug.remote_autostart=0'; \
     echo 'xdebug.remote_connect_back=1'; \
@@ -48,9 +48,14 @@ RUN set -ex; \
   } > /usr/local/etc/php/conf.d/ext-xdebug.ini
 
 # Install Coder.
-RUN set -ex; \
+RUN set -eux; \
   \
   export COMPOSER_HOME="/usr/local/composer"; \
+  \
+  composer global config \
+    --no-plugins \
+    allow-plugins.dealerdirect/phpcodesniffer-composer-installer true; \
+  \
   composer global require drupal/coder; \
   { \
     echo ''; \
@@ -70,16 +75,35 @@ RUN set -ex; \
     echo "alias gitcbf=\"drupalcbf \$(git diff --name-only | tr '\n' ' ')\""; \
   } | tee -a ~/.bashrc /etc/skel/.bashrc
 
-# Install Node.js 15.x.
-RUN set -ex; \
+# Install Node.js 16.
+RUN set -eux; \
+  \
+  savedAptMark="$(apt-mark showmanual)"; \
   \
   apt-get update; \
   apt-get install -y --no-install-recommends \
     gnupg \
   ;\
-  curl -sL https://deb.nodesource.com/setup_15.x | bash -; \
+  curl -sL https://deb.nodesource.com/setup_16.x | bash -; \
   apt-get install -y --no-install-recommends \
     nodejs \
+  ; \
+  # Reset apt-mark's 'manual' list so that 'purge --auto-remove' will remove all
+  # build dependencies.
+  apt-mark auto '.*' > /dev/null; \
+  [ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
+  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+  rm -rf /var/lib/apt/lists/*
+
+# Install sudo.
+RUN set -eux; \
+  \
+  savedAptMark="$(apt-mark showmanual)"; \
+  \
+  apt-get update; \
+  apt-get install -y --no-install-recommends \
+    sudo \
+    unzip \
   ; \
   rm -rf /var/lib/apt/lists/*
 
