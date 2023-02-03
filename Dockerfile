@@ -37,7 +37,7 @@ RUN set -ex; \
 # Install Xdebug.
 RUN set -ex; \
   \
-  pecl install xdebug; \
+  pecl install xdebug-3.1.6; \
   { \
     echo 'zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/xdebug.so'; \
     echo 'xdebug.remote_enable=1'; \
@@ -53,6 +53,7 @@ ENV PATH="$PATH:/usr/local/composer/vendor/bin"
 RUN set -ex; \
   \
   export COMPOSER_HOME="/usr/local/composer"; \
+  composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true; \
   composer global require drupal/coder; \
   phpcs --config-set installed_paths /usr/local/composer/vendor/drupal/coder/coder_sniffer; \
   { \

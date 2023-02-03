@@ -54,9 +54,6 @@ if [[ ! $(id -u $HOST_USER) =~ ^-?[0-9]+$ ]]; then
 
   # Allow the user to use sudo to run all commands without a password.
   echo $HOST_USER' ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/$HOST_USER
-
-  # Add the user to the rvm group.
-  usermod -aG rvm $HOST_USER
 fi
 
 exec "$@"
