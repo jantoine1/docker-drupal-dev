@@ -13,8 +13,8 @@ RUN set -eux; \
 # Install GIT.
 RUN set -eux; \
   \
-  apt-get update; \
-  apt-get install -y --no-install-recommends \
+  apt update; \
+  apt install -y --no-install-recommends \
     git \
     openssh-client \
   ; \
@@ -33,18 +33,18 @@ RUN set -eux; \
     echo 'memory_limit=-1'; \
     echo 'post_max_size=0'; \
     echo 'upload_max_filesize=0'; \
-  } >> /usr/local/etc/php/php.ini;
+  } >> /usr/local/etc/php/php.ini
 
 # Install Xdebug.
 RUN set -ex; \
   \
   pecl install xdebug; \
   { \
-    echo 'zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20190902/xdebug.so'; \
-    echo 'xdebug.remote_enable=1'; \
-    echo 'xdebug.remote_autostart=0'; \
-    echo 'xdebug.remote_connect_back=1'; \
-    echo 'xdebug.remote_port=9000'; \
+    echo 'zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20200930/xdebug.so'; \
+    echo 'xdebug.mode=debug'; \
+    echo 'xdebug.start_with_request=yes'; \
+    echo 'xdebug.discover_client_host=true'; \
+    echo 'xdebug.client_port=9000'; \
   } > /usr/local/etc/php/conf.d/ext-xdebug.ini
 
 # Install Coder.
@@ -80,28 +80,26 @@ RUN set -eux; \
   \
   savedAptMark="$(apt-mark showmanual)"; \
   \
-  apt-get update; \
-  apt-get install -y --no-install-recommends \
+  apt update; \
+  apt install -y --no-install-recommends \
     gnupg \
   ;\
   curl -sL https://deb.nodesource.com/setup_16.x | bash -; \
-  apt-get install -y --no-install-recommends \
+  apt install -y --no-install-recommends \
     nodejs \
   ; \
   # Reset apt-mark's 'manual' list so that 'purge --auto-remove' will remove all
   # build dependencies.
   apt-mark auto '.*' > /dev/null; \
   [ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
-  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+  apt purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
   rm -rf /var/lib/apt/lists/*
 
 # Install sudo.
 RUN set -eux; \
   \
-  savedAptMark="$(apt-mark showmanual)"; \
-  \
-  apt-get update; \
-  apt-get install -y --no-install-recommends \
+  apt update; \
+  apt install -y --no-install-recommends \
     sudo \
     unzip \
   ; \
